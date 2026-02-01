@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Will you be my Valentine?</title>
+
+  <!-- Cute tab title -->
+  <title>Kuwaysah 🐱💖</title>
 
   <style>
     :root { --pink:#ff4d8d; }
@@ -15,6 +17,7 @@
       place-items:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background: radial-gradient(circle at top, #ffd6e6, #ffc1d7 40%, #ffb3cf 100%);
+      overflow:hidden;
     }
 
     .card{
@@ -25,9 +28,10 @@
       box-shadow:0 18px 45px rgba(0,0,0,0.12);
       text-align:center;
       backdrop-filter: blur(6px);
+      z-index:2;
     }
 
-    /* Cat image */
+    /* Cat */
     .cat-wrap{
       width:110px;
       height:110px;
@@ -110,29 +114,35 @@
       display:block;
     }
 
-    /* Confetti */
+    /* CONFETTI */
     .confetti{
       position:fixed;
       inset:0;
       pointer-events:none;
       overflow:hidden;
-      display:none;
+      z-index:1;
     }
     .piece{
       position:absolute;
       top:-20px;
       width:10px;
-      height:14px;
+      height:16px;
       border-radius:2px;
-      animation: fall 1.8s linear forwards;
+      animation: fall linear forwards;
     }
     @keyframes fall{
-      to{ transform: translateY(110vh) rotate(520deg); }
+      to{
+        transform: translateY(120vh) rotate(720deg);
+        opacity:1;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <div class="confetti" id="confetti"></div>
+
   <div class="card">
 
     <!-- CAT IMAGE -->
@@ -164,11 +174,11 @@
         />
       </div>
     </div>
+
   </div>
 
-  <div class="confetti" id="confetti"></div>
-
   <script>
+    // Name override via ?name=
     const params = new URLSearchParams(location.search);
     const who = params.get("name");
     if (who) {
@@ -183,13 +193,12 @@
     const page2 = document.getElementById("page2");
     const confetti = document.getElementById("confetti");
 
+    /* No button runs away */
     function moveNoButton(){
       const a = arena.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
-      const x = Math.random() * (a.width - b.width);
-      const y = Math.random() * (a.height - b.height);
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      noBtn.style.left = Math.random() * (a.width - b.width) + "px";
+      noBtn.style.top  = Math.random() * (a.height - b.height) + "px";
     }
 
     ["mouseenter","pointerenter","touchstart","pointerdown"].forEach(e=>{
@@ -199,27 +208,30 @@
       },{passive:false});
     });
 
-    function popConfetti(){
-      confetti.style.display="block";
-      confetti.innerHTML="";
-      for(let i=0;i<80;i++){
-        const p=document.createElement("div");
-        p.className="piece";
-        p.style.left=Math.random()*100+"vw";
-        p.style.background=`hsl(${Math.random()*360},85%,60%)`;
-        p.style.animationDelay=Math.random()*0.4+"s";
-        confetti.appendChild(p);
-      }
-      setTimeout(()=>confetti.style.display="none",2200);
-    }
-
+    /* Switch to page 2 */
     yesBtn.addEventListener("click",()=>{
       page1.style.display="none";
       page2.style.display="block";
-      popConfetti();
     });
 
     moveNoButton();
+
+    /* 🔥 NON-STOP FAST CONFETTI */
+    function spawnConfetti(){
+      for(let i=0;i<12;i++){   // density (higher = more)
+        const p = document.createElement("div");
+        p.className = "piece";
+        p.style.left = Math.random()*100 + "vw";
+        p.style.background = `hsl(${Math.random()*360},85%,60%)`;
+        p.style.animationDuration = (1 + Math.random()*1) + "s"; // FAST
+        confetti.appendChild(p);
+
+        setTimeout(()=>p.remove(), 2000);
+      }
+    }
+
+    // Run continuously
+    setInterval(spawnConfetti, 120); // speed (lower = faster)
   </script>
 </body>
 </html>
